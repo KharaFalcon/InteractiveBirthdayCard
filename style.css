@@ -1,0 +1,302 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Caveat&family=Inter&family=Playfair+Display&display=swap');
+
+:root {
+    /* Font Families */
+    --font-playfair: 'Playfair Display', serif;
+    --font-body: var(--font-playfair);
+
+    --font-pacifico: 'Pacifico', cursive;
+    --font-caveat: 'Caveat', cursive;
+
+
+    /* Cake Colors */
+    --cake-base-bg: #c2410c;
+    --cake-base-border: #9a3412;
+    --cake-icing-bg: #fbbf24;
+    --cake-plate-bg: #fde68a;
+
+
+    /* Candle Colors */
+    --candle-body-bg: #fef3c7;
+    --wick-bg: #78350f;
+    --wick-lit-bg: #ef4444;
+    --flame-bg: #f59e0b;
+    --flame-glow-color: #fef08a;
+
+    /* Balloon Colors */
+    --balloon-string-color: #a16207;
+    --balloon1-bg: #ef4444;
+    --balloon2-bg: #f97316;
+    --balloon3-bg: #eab308;
+    --balloon4-bg: #dc2626;
+
+    /* Shadow Colors & Opacities */
+    --shadow-color-primary-rgb: 0, 0, 0;
+    /* Base for rgba shadows */
+    --shadow-opacity-light: 0.2;
+    --shadow-opacity-medium: 0.3;
+    --shadow-opacity-darker: 0.15;
+    --shadow-opacity-icing: 0.1;
+
+    /* Combined shadow colors for direct use */
+    --shadow-light: rgba(var(--shadow-color-primary-rgb), var(--shadow-opacity-light));
+    --shadow-medium: rgba(var(--shadow-color-primary-rgb), var(--shadow-opacity-medium));
+    --shadow-darker: rgba(var(--shadow-color-primary-rgb), var(--shadow-opacity-darker));
+    --shadow-icing: rgba(var(--shadow-color-primary-rgb), var(--shadow-opacity-icing));
+}
+
+body {
+    font-family: var(--font-body);
+    /* This will now use Playfair Display */
+    overflow: hidden;
+}
+
+.confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+/* Cake and Candles Styling */
+.cake-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1.0rem;
+    position: relative;
+    min-height: 100px;
+}
+
+.cake-base {
+    width: 180px;
+    height: 80px;
+    background-color: var(--cake-base-bg);
+    border-radius: 10px 10px 50% 50% / 0 0 30px 30px;
+    position: relative;
+    box-shadow: 0 8px 16px var(--shadow-light);
+    border: 4px solid var(--cake-base-border);
+}
+
+.cake-icing {
+    width: 190px;
+    height: 25px;
+    background-color: var(--cake-icing-bg);
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 12px 12px 8px 8px;
+    box-shadow: 0 2px 4px var(--shadow-icing);
+}
+
+.cake-plate {
+    width: 220px;
+    height: 15px;
+    background-color: var(--cake-plate-bg);
+    border-radius: 50% / 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-top: -5px;
+    box-shadow: 0 2px 5px var(--shadow-darker);
+}
+
+
+.candles-area {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    width: 120px;
+    position: absolute;
+    top: -55px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 50px;
+}
+
+.candle {
+    width: 12px;
+    height: 40px;
+    background-color: var(--candle-body-bg);
+    border-radius: 3px 3px 0 0;
+    position: relative;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+    box-shadow: 0 2px 3px var(--shadow-light);
+}
+
+.candle:hover {
+    box-shadow: 0 4px 6px var(--shadow-medium);
+}
+
+.wick {
+    width: 4px;
+    height: 8px;
+    background-color: var(--wick-bg);
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px 2px 0 0;
+}
+
+.flame {
+    display: none;
+    width: 14px;
+    height: 22px;
+    background-color: var(--flame-bg);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: flicker 0.5s infinite alternate ease-in-out;
+    box-shadow: 0 0 10px var(--flame-bg), 0 0 15px var(--flame-bg), 0 0 20px var(--flame-glow-color);
+}
+
+.candle.lit .flame {
+    display: block;
+}
+
+.candle.lit .wick {
+    background-color: var(--wick-lit-bg);
+}
+
+.candle.lit {
+    pointer-events: none;
+}
+
+@keyframes flicker {
+    0% {
+        transform: translateX(-50%) scaleY(1) scaleX(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: translateX(-45%) scaleY(0.95) scaleX(1.05);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateX(-55%) scaleY(1.05) scaleX(0.95);
+        opacity: 1;
+    }
+}
+
+
+.revealed-message {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.7s ease-in-out, opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
+    opacity: 0;
+    transform: translateY(-20px);
+    border-radius: 12px;
+    /* If you want the revealed message to also use Playfair Display,
+       you can add: font-family: var(--font-playfair);
+       or ensure it inherits from the body. */
+}
+
+.revealed-message.show {
+    max-height: 1000px;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Class to specifically apply Playfair Display if needed elsewhere */
+.font-playfair-display {
+    font-family: var(--font-playfair);
+}
+
+.font-pacifico {
+    font-family: var(--font-pacifico);
+}
+
+.font-caveat {
+    font-family: var(--font-caveat);
+}
+
+/* Balloons Styling (same as before) */
+.balloons-container {
+    position: fixed;
+    bottom: -150px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+}
+
+.balloon {
+    width: 70px;
+    height: 90px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: relative;
+    animation: floatUp 15s infinite ease-in-out;
+    opacity: 0.8;
+    box-shadow: inset -5px -5px 10px var(--shadow-light);
+}
+
+.balloon::after {
+    content: "";
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 50px;
+    background-color: var(--balloon-string-color);
+}
+
+.balloon:nth-child(1) {
+    animation-delay: 0s;
+    left: -15%;
+    background-color: var(--balloon1-bg);
+}
+
+.balloon:nth-child(2) {
+    animation-delay: 2s;
+    left: 0%;
+    background-color: var(--balloon2-bg);
+}
+
+.balloon:nth-child(3) {
+    animation-delay: 4s;
+    left: 15%;
+    background-color: var(--balloon3-bg);
+}
+
+.balloon:nth-child(4) {
+    animation-delay: 1.5s;
+    left: 30%;
+    background-color: var(--balloon4-bg);
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .balloon:nth-child(4) {
+        display: block;
+    }
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) translateX(0px) rotate(0deg);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translateY(-80vh) translateX(20px) rotate(10deg);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: translateY(-160vh) translateX(-20px) rotate(-10deg);
+        opacity: 0;
+    }
+}
